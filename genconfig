@@ -1,0 +1,79 @@
+#!/bin/sh
+
+set -e
+
+CARCH="$(uname -m)"
+TARGET="$CARCH-pc-linux-musl"
+HOST="$(echo $MACHTYPE | sed "s/-[^-]*/-cross/")"
+
+MAKEFLAGS="-j$(nproc)"
+CFLAGS="-O2 -march=x86-64 -pipe"
+CXXFLAGS="${CFLAGS}"
+
+TOPDIR="$PWD"
+TCDIR="$TOPDIR/$TARGET-crosstoolchain"
+ROOT_DIR="$TOPDIR/$TARGET-rootfs"
+
+SOURCE_DIR="$TOPDIR/sources"
+LOG_DIR="$TOPDIR/log"
+WORK_DIR="$TOPDIR/work"
+FILES_DIR="$TOPDIR/files"
+
+PATH="$TCDIR/bin:$PATH"
+
+[ -f ./config ] && . ./config
+
+cat << EOF > pkg.conf
+export HOST="$HOST"
+export TARGET="$TARGET"
+export CARCH="$CARCH"
+
+export CC="$TARGET-gcc"
+export CXX="$TARGET-g++"
+export AR="$TARGET-ar"
+export AS="$TARGET-as"
+export RANLIB="$TARGET-ranlib"
+export LD="$TARGET-ld"
+export STRIP="$TARGET-strip"
+
+export TCDIR="$TCDIR"
+export PATH=$PATH
+
+export ROOT_DIR="$ROOT_DIR"
+
+export PKG_CONFIG_PATH="$ROOT_DIR/usr/lib/pkgconfig:$ROOT_DIR/usr/share/pkgconfig"
+#export PKG_CONFIG_SYSROOT_DIR="$ROOT_DIR"
+
+BOOTSTRAP=1
+
+export MAKEFLAGS="$MAKEFLAGS"
+export CFLAGS="$CFLAGS"
+export CXXFLAGS="$CXXFLAGS"
+
+SOURCE_DIR="$SOURCE_DIR"
+WORK_DIR="$WORK_DIR"
+LOG_DIR="$LOG_DIR"
+FILES_DIR="$FILES_DIR"
+EOF
+
+cat << EOF > crosspkg.conf
+export MAKEFLAGS="$MAKEFLAGS"
+export CFLAGS=
+export CXXFLAGS=
+
+export HOST="$HOST"
+export TARGET="$TARGET"
+export CARCH="$CARCH"
+
+export TCDIR="$TCDIR"
+export PATH=$PATH
+
+export ROOT_DIR="$ROOT_DIR"
+
+SOURCE_DIR="$SOURCE_DIR"
+WORK_DIR="$WORK_DIR"
+LOG_DIR="$LOG_DIR"
+FILES_DIR="$FILES_DIR"
+EOF
+
+exit 0

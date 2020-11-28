@@ -1,0 +1,130 @@
+#!/bin/sh
+
+xfetch() {
+	[ "$1" ] || exit 1
+	filename=${1##*/}
+	[ -f $SOURCE_DIR/$filename ] && return 0
+	msg "Fetching $filename..."
+	curl -C - -L --fail --ftp-pasv --retry 3 --retry-delay 3 -o $SOURCE_DIR/$filename.part $1 && \
+		mv $SOURCE_DIR/$filename.part $SOURCE_DIR/$filename || \
+		exit 1
+}
+
+xunpack() {
+	[ "$1" ] || exit 1
+	msg "Unpacking $1..."
+	tar -xf $SOURCE_DIR/$1 -C $SRC
+}
+
+xclean() {
+	msg "Cleaning working dir..."
+	rm -fr $PKG $SRC
+}
+
+xinstall() {
+	cd $PKG
+	[ -f "usr/share/info/dir" ] && rm "usr/share/info/dir"
+	find . ! -type d -name "*.la" -delete
+	find . -type f | while read -r line; do
+		line=${line#*/}
+		if [ -e "$ROOT_DIR/$line" ] || [ -L "$ROOT_DIR/$line" ]; then
+			if [ "$upgrade" = "1" ] && [ -s "$DB_DIR/$scriptname" ]; then
+				if ! grep -xq "$line" "$DB_DIR/$scriptname"; then
+					echo "conflict: $line"
+					touch "$WORK_DIR/conflict.$scriptname"
+				fi
+			else
+				echo "conflict: $line"
+				touch "$WORK_DIR/conflict.$scriptname"
+			fi
+		fi
+	done
+	if [ -f "$WORK_DIR/conflict.$scriptname" ]; then
+		echo "!! File conflict found"
+		rm "$WORK_DIR/conflict.$scriptname"
+		exit 1
+	fi
+	msg "Installing to rootdir..."
+	rsync -Ka . $ROOT_DIR/
+	# list dirs
+	find . -type d | sed 's/$/\//' | sed 's/^\.\///' | sed '/^$/d' > $WORK_DIR/db.$scriptname
+	# list files including symlinks
+	find . \( -type f -o -type l \) | sed 's/^\.\///' | sed '/^$/d' >> $WORK_DIR/db.$scriptname
+	if [ "$upgrade" = 1 ] && [ -s "$DB_DIR/$scriptname" ]; then
+		grep -v "/$" "$DB_DIR/$scriptname" | tail -n+2 | tac | while read -r line; do
+			case $line in
+				*/bin/[|*/bin/[[) continue;;
+			esac
+			grep -qx "$line" $WORK_DIR/db.$scriptname && continue
+			rm -v "$ROOT_DIR/$line"
+		done
+		grep "/$" "$DB_DIR/$scriptname" | tac | while read -r line; do
+			grep -qx "$line" $WORK_DIR/db.$scriptname && continue
+			if ! grep -x "$line" $DB_DIR/* | grep -vq "$DB_DIR/$scriptname:"; then
+				rmdir -v "$ROOT_DIR/$line"
+			fi
+		done
+		grep -v "/$" "$WORK_DIR/db.$scriptname" | while read -r line; do
+			case $line in
+				*/bin/[|*/bin/[[) continue;;
+			esac
+			grep -qx "$line" $DB_DIR/$scriptname && continue
+			echo "new '$line'"
+		done
+		grep "/$" "$WORK_DIR/db.$scriptname" | tac | while read -r line; do
+			grep -qx "$line" $WORK_DIR/db.$scriptname && continue
+			echo "new '$line'"
+		done
+	fi
+	echo "${version:-0}" > $DB_DIR/$scriptname
+	sort $WORK_DIR/db.$scriptname >> $DB_DIR/$scriptname
+	rm $WORK_DIR/db.$scriptname
+	cd - >/dev/null
+	xclean
+}
+
+msg() {
+	[ "$1" ] || return 1
+	timestamp="$(date)"
+	echo ":: $*"
+	echo "$timestamp : [$scriptname] $*" >> "$XLOG"
+}
+
+#ROOT_DIR=${ROOT_DIR:-$PWD/rootfs}
+XPKG_DIR="$ROOT_DIR/var/lib/pkg"
+
+SOURCE_DIR=${SOURCE_DIR:-$XPKG_DIR/sources}
+LOG_DIR=${LOG_DIR:-$XPKG_DIR/log}
+WORK_DIR=${WORK_DIR:-$XPKG_DIR/work}
+FILES_DIR=${FILES_DIR:-$XPKG_DIR/files}
+
+DB_DIR="$XPKG_DIR/db"
+XLOG="$XPKG_DIR/pkg.log"
+
+scriptname=${0##*/}
+scriptname=${scriptname%.sh}
+
+PKG=$WORK_DIR/pkg.$scriptname
+SRC=$WORK_DIR/src.$scriptname
+
+[ "$1" = "u" ] && upgrade=1
+
+if [ "$ROOT_DIR" ]; then
+	[ -d $ROOT_DIR ] || mkdir -p $ROOT_DIR
+fi
+
+[ -d $SOURCE_DIR ] || mkdir -p $SOURCE_DIR
+[ -d $LOG_DIR ] || mkdir -p $LOG_DIR
+[ -d $WORK_DIR ] || mkdir -p $WORK_DIR
+[ -d $DB_DIR ] || mkdir -p $DB_DIR
+
+if [ -s $DB_DIR/$scriptname ] && [ "$upgrade" != "1" ]; then
+	iv=$(head -n1 $DB_DIR/$scriptname)
+	echo ":: $scriptname is installed ($iv)"
+	exit 0
+fi
+
+rm -fr $PKG
+mkdir -p $PKG
+rm -fr $SRC
+mkdir -p $SRC

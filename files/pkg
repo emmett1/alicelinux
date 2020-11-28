@@ -1,0 +1,108 @@
+#!/bin/sh
+
+pkg_install() {
+	for i in $(deplist $1); do
+		[ -f "$DB_DIR"/$i ] && continue
+		[ -f "$SCRIPTS_DIR"/$i.sh ] || {
+			echo "script '$i' not exist!"
+			continue
+		}
+		echo "installing $i"
+	done
+}
+
+pkg_deplist() {
+	[ "$1" ] || exit 1
+	[ -f "$SCRIPTS_DIR"/$1.sh ] || {
+		echo "script '$1' not exist!"
+		exit 1
+	}
+	deplist $1
+}
+
+pkg_depends() {
+	[ "$1" ] || exit 1
+	[ -f "$SCRIPTS_DIR"/$1.sh ] || {
+		echo "script '$1' not exist!"
+		exit 1
+	}
+	getdeps $1
+}
+
+pkg_files() {
+	[ "$1" ] || exit 1
+	[ -f "$DB_DIR"/$1 ] || {
+		echo "pkg '$1' not installed!"
+		exit 1
+	}
+	tail -n +2 "$DB_DIR"/$1
+}
+
+pkg_help() {
+	cat << EOF
+usage:
+  $(basename $0) <cmd> [<arg>]
+   
+cmd:
+  install <pkg>     install pkg with dependencies
+  depends <pkg>     show dependencies for pkg
+  deplist <pkg>     show dependencies tree for pkg
+  files   <pkg>     show list files installed by pkg
+   
+EOF
+}
+
+getdeps() {
+	[ -f "$SCRIPTS_DIR"/$1.sh ] || return
+	grep "^#depends:" "$SCRIPTS_DIR"/$1.sh \
+	| sed 's/^#depends:[[:blank:]]*//' \
+	| tr ' ' '\n' \
+	| awk '!a[$0]++' \
+	| sed 's/,//'
+}
+
+deplist() {
+	# check currently process for circular dependencies
+	# for circular dependencies, found first will take precedence
+	[ "$CHECK" ] && {
+		if echo $CHECK | tr " " "\n" | grep -qx $1; then
+			return 0
+		fi
+	}
+	
+	# add package to currently process
+	CHECK="$CHECK $1"
+	
+	# check dependencies
+	for i in $(getdeps $1); do
+		if ! echo $DEP | tr " " "\n" | grep -qx $i; then
+			deplist $i
+		fi
+	done
+	
+	# add dependency to list checked dep
+	if ! echo $DEP | tr " " "\n" | grep -qx $1; then
+		echo "$1"
+	fi
+	
+	# delete item from loop process
+	CHECK=$(echo $CHECK | sed "s/$1//")
+}
+
+SOURCE_DIR="/var/lib/pkg/sources"
+WORK_DIR="/var/lib/pkg/work"
+LOG_DIR="/var/lib/pkg/log"
+FILES_DIR="/var/lib/pkg/files"
+SCRIPTS_DIR="/var/lib/pkg/scripts"
+DB_DIR="/var/lib/pkg/db"
+
+cmd=$1
+shift
+
+if [ $(command -v pkg_$cmd) ]; then
+	pkg_$cmd $1
+else
+	echo "Invalid command!"
+	exit 1
+fi
+

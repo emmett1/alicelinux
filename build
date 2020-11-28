@@ -1,0 +1,21 @@
+#!/bin/sh
+
+set -e
+
+./genconfig
+
+for s in linux-headers cross-binutils cross-gcc-static musl \
+	cross-gcc filesystem zlib binutils m4 libgmp libmpfr \
+	libmpc gcc make file busybox libressl rsync curl pkg; do
+	cd scripts
+	echo "Running script $s.sh"
+	./$s.sh
+	cd - >/dev/null
+done
+
+mkdir -p $ROOT_DIR/var/lib/pkg/scripts
+mkdir -p $ROOT_DIR/var/lib/pkg/files
+rsync -a scripts/ $ROOT_DIR/var/lib/pkg/scripts/ --delete
+rsync -a files/ $ROOT_DIR/var/lib/pkg/files/ --delete
+
+exit 0

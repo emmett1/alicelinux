@@ -1,0 +1,6 @@
+config.default
+crosspkg.conf
+pkg.conf
+log/
+sources/
+work/
