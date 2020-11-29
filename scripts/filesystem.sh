@@ -2,7 +2,8 @@
 
 set -e
 
-if [ -f $(dirname $(dirname $(realpath $0)))/pkg.conf ]; then
+if [ -f $(dirname $(dirname $(realpath $0)))/main.conf ]; then
+	. $(dirname $(dirname $(realpath $0)))/main.conf
 	. $(dirname $(dirname $(realpath $0)))/pkg.conf
 	. $(dirname $(dirname $(realpath $0)))/files/functions
 else
@@ -28,17 +29,17 @@ install -d -m 1777 $PKG/tmp $PKG/var/tmp
 # /usr and /usr/local dirs
 for d in bin include lib sbin src; do
 	mkdir -p $PKG/usr/$d
-	mkdir -p $PKG/usr/local/$d
+	#mkdir -p $PKG/usr/local/$d
 done
 
 # man page dirs
 for d in 1 2 3 4 5 6 7 8; do
 	mkdir -p $PKG/usr/share/man/man$d
-	mkdir -p $PKG/usr/local/share/man/man$d
+	#mkdir -p $PKG/usr/local/share/man/man$d
 done
 
 # /var dirs
-for d in log mail spool opt cache lib/misc local; do
+for d in log mail spool opt cache lib/misc; do
 	mkdir -p $PKG/var/$d
 done
 

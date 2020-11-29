@@ -1,6 +1,7 @@
-config.default
-crosspkg.conf
-pkg.conf
+config
+*.conf
 log/
 sources/
 work/
+*-crosstoolchain/
+*-rootfs/

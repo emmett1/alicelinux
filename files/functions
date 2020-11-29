@@ -17,14 +17,90 @@ xunpack() {
 }
 
 xclean() {
-	msg "Cleaning working dir..."
+	msg "Cleaning working directory..."
 	rm -fr $PKG $SRC
+}
+
+xstrip() {
+	[ "$1" ] || return
+	case "$(file -bi "$1")" in
+		*application/x-sharedlib*)  # Libraries (.so)
+			${CROSS_COMPILE}strip --strip-unneeded "$1" 2>/dev/null ;;
+		*application/x-pie-executable*)  # Libraries (.so)
+			${CROSS_COMPILE}strip --strip-unneeded "$1" 2>/dev/null ;;
+		*application/x-archive*)    # Libraries (.a)
+			${CROSS_COMPILE}strip --strip-debug "$1" 2>/dev/null ;;
+		*application/x-object*)
+			case "$1" in
+				*.ko)                   # Kernel module
+					${CROSS_COMPILE}strip --strip-unneeded "$1" 2>/dev/null ;;
+				*)
+					continue;;
+			esac;;
+		*application/x-executable*) # Binaries
+			${CROSS_COMPILE}strip --strip-all "$1" 2>/dev/null ;;
+		*)
+			continue ;;
+	esac	
+}
+
+xcompressman() {
+	find . -type f -path "*/man/man*/*" | while read -r file; do
+		if [ "$file" = "${file%%.gz}" ]; then
+			gzip -9 -f "$file"
+		fi
+	done
+	find . -type l -path "*/man/man*/*" | while read -r file; do
+		FILE="${file%%.gz}.gz"
+		TARGET="$(readlink $file)"
+		TARGET="${TARGET##*/}"
+		TARGET="${TARGET%%.gz}.gz"
+		DIR=$(dirname "$FILE")
+		rm -f $file
+		if [ -e "$DIR/$TARGET" ]; then
+			ln -sf $TARGET $FILE
+		fi
+	done
+}
+
+xcompressinfo() {
+	find "usr/share/info" -type f | while read -r file; do
+		if [ "$file" = "${file%%.gz}" ]; then
+			gzip -9 -f "$file"
+		fi
+	done
 }
 
 xinstall() {
 	cd $PKG
+	
+	if [ ! "$(find . -maxdepth 1 -type d 2>/dev/null)" ]; then
+		echo "error: PKG is empty"
+		abort 1
+	fi
+	
+	# remove junk
 	[ -f "usr/share/info/dir" ] && rm "usr/share/info/dir"
+	[ -f "usr/lib/charset.alias" ] && rm "usr/lib/charset.alias"
+	
+	# remove libtool files
 	find . ! -type d -name "*.la" -delete
+	
+	# remove empty dirs
+	find . -type d -empty -delete
+	
+	# compress man-pages
+	xcompressman
+	
+	# compress info pages
+	xcompressinfo
+	
+	# strip binaries & libraries
+	find . -type f -printf "%P\n" 2>/dev/null | while read -r binary ; do
+		xstrip "$binary"
+	done
+	
+	# check for conflicting files
 	find . -type f | while read -r line; do
 		line=${line#*/}
 		if [ -e "$ROOT_DIR/$line" ] || [ -L "$ROOT_DIR/$line" ]; then
@@ -44,10 +120,14 @@ xinstall() {
 		rm "$WORK_DIR/conflict.$scriptname"
 		exit 1
 	fi
-	msg "Installing to rootdir..."
+	
+	# installing files into system
+	msg "Installing '$scriptname-$version'..."
 	rsync -Ka . $ROOT_DIR/
+	
 	# list dirs
 	find . -type d | sed 's/$/\//' | sed 's/^\.\///' | sed '/^$/d' > $WORK_DIR/db.$scriptname
+	
 	# list files including symlinks
 	find . \( -type f -o -type l \) | sed 's/^\.\///' | sed '/^$/d' >> $WORK_DIR/db.$scriptname
 	if [ "$upgrade" = 1 ] && [ -s "$DB_DIR/$scriptname" ]; then
@@ -56,12 +136,14 @@ xinstall() {
 				*/bin/[|*/bin/[[) continue;;
 			esac
 			grep -qx "$line" $WORK_DIR/db.$scriptname && continue
-			rm -v "$ROOT_DIR/$line"
+			rm "$ROOT_DIR/$line"
+			echo "removed '$line'"
 		done
 		grep "/$" "$DB_DIR/$scriptname" | tac | while read -r line; do
 			grep -qx "$line" $WORK_DIR/db.$scriptname && continue
 			if ! grep -x "$line" $DB_DIR/* | grep -vq "$DB_DIR/$scriptname:"; then
-				rmdir -v "$ROOT_DIR/$line"
+				rmdir "$ROOT_DIR/$line"
+				echo "removed '$line'"
 			fi
 		done
 		grep -v "/$" "$WORK_DIR/db.$scriptname" | while read -r line; do
@@ -76,6 +158,7 @@ xinstall() {
 			echo "new '$line'"
 		done
 	fi
+	
 	echo "${version:-0}" > $DB_DIR/$scriptname
 	sort $WORK_DIR/db.$scriptname >> $DB_DIR/$scriptname
 	rm $WORK_DIR/db.$scriptname

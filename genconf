@@ -23,10 +23,30 @@ PATH="$TCDIR/bin:$PATH"
 
 [ -f ./config ] && . ./config
 
+cat << EOF > main.conf
+export ROOT_DIR="$ROOT_DIR"
+
+export TCDIR="$TCDIR"
+export PATH=$PATH
+
+BOOTSTRAP=1
+
+CROSS_COMPILE="$TARGET-"
+
+SOURCE_DIR="$SOURCE_DIR"
+WORK_DIR="$WORK_DIR"
+LOG_DIR="$LOG_DIR"
+FILES_DIR="$FILES_DIR"
+EOF
+
 cat << EOF > pkg.conf
 export HOST="$HOST"
 export TARGET="$TARGET"
 export CARCH="$CARCH"
+
+export MAKEFLAGS="$MAKEFLAGS"
+export CFLAGS="$CFLAGS"
+export CXXFLAGS="$CXXFLAGS"
 
 export CC="$TARGET-gcc"
 export CXX="$TARGET-g++"
@@ -36,44 +56,18 @@ export RANLIB="$TARGET-ranlib"
 export LD="$TARGET-ld"
 export STRIP="$TARGET-strip"
 
-export TCDIR="$TCDIR"
-export PATH=$PATH
-
-export ROOT_DIR="$ROOT_DIR"
-
 export PKG_CONFIG_PATH="$ROOT_DIR/usr/lib/pkgconfig:$ROOT_DIR/usr/share/pkgconfig"
 #export PKG_CONFIG_SYSROOT_DIR="$ROOT_DIR"
-
-BOOTSTRAP=1
-
-export MAKEFLAGS="$MAKEFLAGS"
-export CFLAGS="$CFLAGS"
-export CXXFLAGS="$CXXFLAGS"
-
-SOURCE_DIR="$SOURCE_DIR"
-WORK_DIR="$WORK_DIR"
-LOG_DIR="$LOG_DIR"
-FILES_DIR="$FILES_DIR"
 EOF
 
 cat << EOF > crosspkg.conf
-export MAKEFLAGS="$MAKEFLAGS"
-export CFLAGS=
-export CXXFLAGS=
-
 export HOST="$HOST"
 export TARGET="$TARGET"
 export CARCH="$CARCH"
 
-export TCDIR="$TCDIR"
-export PATH=$PATH
-
-export ROOT_DIR="$ROOT_DIR"
-
-SOURCE_DIR="$SOURCE_DIR"
-WORK_DIR="$WORK_DIR"
-LOG_DIR="$LOG_DIR"
-FILES_DIR="$FILES_DIR"
+export MAKEFLAGS="$MAKEFLAGS"
+export CFLAGS=
+export CXXFLAGS=
 EOF
 
 exit 0

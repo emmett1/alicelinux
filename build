@@ -2,7 +2,7 @@
 
 set -e
 
-./genconfig
+./genconf
 
 for s in linux-headers cross-binutils cross-gcc-static musl \
 	cross-gcc filesystem zlib binutils m4 libgmp libmpfr \
@@ -13,9 +13,7 @@ for s in linux-headers cross-binutils cross-gcc-static musl \
 	cd - >/dev/null
 done
 
-mkdir -p $ROOT_DIR/var/lib/pkg/scripts
-mkdir -p $ROOT_DIR/var/lib/pkg/files
-rsync -a scripts/ $ROOT_DIR/var/lib/pkg/scripts/ --delete
-rsync -a files/ $ROOT_DIR/var/lib/pkg/files/ --delete
+echo "Copying scripts and files..."
+./cpscripts
 
 exit 0

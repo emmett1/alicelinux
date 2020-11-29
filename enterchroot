@@ -1,0 +1,66 @@
+#!/bin/sh
+
+HOLDPATH=$PATH
+
+if [ -f ./main.conf ]; then
+	. ./main.conf
+else
+	echo "error: please run ./genconf first"
+	exit 1
+fi
+
+PATH=$HOLDPATH
+
+unmount() {
+	while true; do
+		mountpoint -q $1 || break
+		umount $1 2>/dev/null
+	done
+}
+
+[ "$(id -u)" = "0" ] || {
+	echo "error: $(basename $0) need root access!"
+	exit 1
+}
+
+mount --bind /dev $ROOT_DIR/dev
+mount -t devpts devpts $ROOT_DIR/dev/pts -o gid=5,mode=620
+mount -t proc proc $ROOT_DIR/proc
+mount -t sysfs sysfs $ROOT_DIR/sys
+if [ -n "$EFI_SYSTEM" ]; then
+	mount --bind /sys/firmware/efi/efivars $ROOT_DIR/sys/firmware/efi/efivars
+fi
+mount -t tmpfs tmpfs $ROOT_DIR/run
+
+if [ -h $ROOT_DIR/dev/shm ]; then
+  mkdir -p $ROOT_DIR/$(readlink $ROOT_DIR/dev/shm)
+fi
+
+[ -f $ROOT_DIR/etc/resolv.conf ] && {
+	backupresolvconf=1
+	mv $ROOT_DIR/etc/resolv.conf $ROOT_DIR/etc/resolv.conf.tmp
+}
+cp -L /etc/resolv.conf $ROOT_DIR/etc
+
+chroot "$ROOT_DIR" /usr/bin/env -i \
+HOME=/root \
+TERM="$TERM" \
+PS1='\u:\w\$ ' \
+PATH=/bin:/usr/bin:/sbin:/usr/sbin sh
+
+retval=$?
+
+[ "$backupresolvconf" = 1 ] && {
+	mv $ROOT_DIR/etc/resolv.conf.tmp $ROOT_DIR/etc/resolv.conf
+}
+
+unmount $ROOT_DIR/dev/pts
+unmount $ROOT_DIR/dev
+unmount $ROOT_DIR/run
+unmount $ROOT_DIR/proc
+if [ -n "$EFI_SYSTEM" ]; then
+	unmount $ROOT_DIR/sys/firmware/efi/efivars
+fi
+unmount $ROOT_DIR/sys
+
+exit $retval

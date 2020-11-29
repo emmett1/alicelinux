@@ -5,8 +5,6 @@ set -e
 . /etc/pkg.conf
 . /var/lib/pkg/functions
 
-#depends: perl
-
 name=perl
 version=5.32.0
 url=https://www.cpan.org/src/5.0/$name-$version.tar.xz

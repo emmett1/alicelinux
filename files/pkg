@@ -7,7 +7,8 @@ pkg_install() {
 			echo "script '$i' not exist!"
 			continue
 		}
-		echo "installing $i"
+		echo "installing $i..."
+		sh "$SCRIPTS_DIR"/$i.sh
 	done
 }
 

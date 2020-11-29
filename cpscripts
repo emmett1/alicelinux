@@ -1,0 +1,15 @@
+#!/bin/sh
+
+if [ -f ./main.conf ]; then
+	. ./main.conf
+else
+	echo "error: please run ./genconf first"
+	exit 1
+fi
+
+mkdir -p $ROOT_DIR/var/lib/pkg/scripts
+mkdir -p $ROOT_DIR/var/lib/pkg/files
+rsync -a scripts/ $ROOT_DIR/var/lib/pkg/scripts/ --delete
+rsync -a files/ $ROOT_DIR/var/lib/pkg/files/ --delete
+
+exit 0

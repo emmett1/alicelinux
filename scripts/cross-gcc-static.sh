@@ -2,7 +2,8 @@
 
 set -e
 
-if [ -f $(dirname $(dirname $(realpath $0)))/crosspkg.conf ]; then
+if [ -f $(dirname $(dirname $(realpath $0)))/main.conf ]; then
+	. $(dirname $(dirname $(realpath $0)))/main.conf
 	. $(dirname $(dirname $(realpath $0)))/crosspkg.conf
 	. $(dirname $(dirname $(realpath $0)))/files/functions
 else

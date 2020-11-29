@@ -10,6 +10,8 @@ else
 	. /var/lib/pkg/functions
 fi
 
+#depends: gperf
+
 name=eudev
 version=3.2.9
 url=https://dev.gentoo.org/~blueness/$name/$name-$version.tar.gz

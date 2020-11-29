@@ -2,7 +2,8 @@
 
 set -e
 
-if [ -f $(dirname $(dirname $(realpath $0)))/pkg.conf ]; then
+if [ -f $(dirname $(dirname $(realpath $0)))/main.conf ]; then
+	. $(dirname $(dirname $(realpath $0)))/main.conf
 	. $(dirname $(dirname $(realpath $0)))/pkg.conf
 	. $(dirname $(dirname $(realpath $0)))/files/functions
 else

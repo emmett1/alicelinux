@@ -1,0 +1,11 @@
+#MAKEFLAGS="-j$(nproc)"
+#CFLAGS="-O2 -march=x86-64 -pipe"
+#CXXFLAGS="${CFLAGS}"
+
+#TCDIR="$TOPDIR/$TARGET-crosstoolchain"
+#ROOT_DIR="$TOPDIR/$TARGET-rootfs"
+
+#SOURCE_DIR="$TOPDIR/sources"
+#LOG_DIR="$TOPDIR/log"
+#WORK_DIR="$TOPDIR/work"
+#FILES_DIR="$TOPDIR/files"

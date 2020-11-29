@@ -5,6 +5,8 @@ set -e
 . /etc/pkg.conf
 . /var/lib/pkg/functions
 
+#depends: musl-compat
+
 name=elfutils
 version=0.182
 url=https://sourceware.org/ftp/elfutils/$version/elfutils-$version.tar.bz2

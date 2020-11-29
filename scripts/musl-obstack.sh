@@ -2,8 +2,6 @@
 
 set -e
 
-#depends: libtool
-
 . /etc/pkg.conf
 . /var/lib/pkg/functions
 

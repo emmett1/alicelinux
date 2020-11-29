@@ -5,8 +5,6 @@ set -e
 . /etc/pkg.conf
 . /var/lib/pkg/functions
 
-#depends: perl
-
 name=autoconf
 version=2.69
 url=https://ftp.gnu.org/gnu/$name/$name-$version.tar.xz
