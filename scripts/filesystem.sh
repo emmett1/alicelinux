@@ -82,6 +82,6 @@ install -m644 inittab $PKG/etc
 #install -m644 issue $PKG/etc
 cd -
 
-xinstall $version
+xinstall
 
 exit 0

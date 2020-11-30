@@ -44,6 +44,6 @@ ln -sfv libncurses.so      $PKG/usr/lib/libcurses.so
 # conflict with busybox
 rm $PKG/usr/bin/clear
 
-xinstall $version
+xinstall
 
 exit 0

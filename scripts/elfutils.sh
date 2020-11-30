@@ -40,6 +40,6 @@ make -C libelf DESTDIR="$PKG" install
 mkdir -p "$PKG/usr/lib/pkgconfig"
 cp -f config/libelf.pc "$PKG/usr/lib/pkgconfig/libelf.pc"
 
-xinstall $version
+xinstall
 
 exit 0

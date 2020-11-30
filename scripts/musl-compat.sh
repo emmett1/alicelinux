@@ -18,6 +18,6 @@ for h in tree.h queue.h cdefs.h; do
 	install -D $FILES_DIR/$h $PKG/usr/include/sys/
 done
 
-xinstall $version
+xinstall
 
 exit 0

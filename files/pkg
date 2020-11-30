@@ -1,28 +1,51 @@
 #!/bin/sh
 
+requiredarg() {
+	[ "$1" ] || {
+		echo "error: this command required argument"
+		exit 2
+	}
+}
+
 pkg_install() {
-	for i in $(deplist $1); do
+	for i in $@; do
+		case $i in
+			-dryrun) dryrun=1;;
+			*) pkg="$pkg $i";;
+		esac
+	done
+	for i in $(pkg_deplist $pkg); do
 		[ -f "$DB_DIR"/$i ] && continue
 		[ -f "$SCRIPTS_DIR"/$i.sh ] || {
 			echo "script '$i' not exist!"
 			continue
 		}
-		echo "installing $i..."
-		sh "$SCRIPTS_DIR"/$i.sh
+		if [ "$dryrun" = 1 ]; then
+			echo "(dryrun) Running script $i..."
+		else
+			echo "Running script $i..."
+			sh "$SCRIPTS_DIR"/$i.sh || exit 1
+		fi
 	done
 }
 
 pkg_deplist() {
-	[ "$1" ] || exit 1
-	[ -f "$SCRIPTS_DIR"/$1.sh ] || {
-		echo "script '$1' not exist!"
-		exit 1
-	}
-	deplist $1
+	requiredarg $1
+	for i in $@; do
+		[ -f "$SCRIPTS_DIR"/$1.sh ] || {
+			continue
+		}
+		dep="$dep $(deplist $i)"
+	done
+	for i in $dep; do
+		echo $d | grep -qw $i && continue
+		d="$d $i"
+	done
+	echo $d | tr ' ' '\n'
 }
 
 pkg_depends() {
-	[ "$1" ] || exit 1
+	requiredarg $1
 	[ -f "$SCRIPTS_DIR"/$1.sh ] || {
 		echo "script '$1' not exist!"
 		exit 1
@@ -39,16 +62,56 @@ pkg_files() {
 	tail -n +2 "$DB_DIR"/$1
 }
 
+pkg_integrity() {
+	for i in "$DB_DIR"/*; do
+		pkg=${i##*/}
+		for u in $(tail -n +2 $i);do
+			case $u in
+				*/) [ -d /$u ] || echo "$pkg: $u";;
+				 *) [ -f /$u ] || echo "$pkg: $u";;
+			esac
+		done
+	done
+}
+
+pkg_installed() {
+	for i in "$DB_DIR"/*; do
+		pkg=${i##*/}
+		ver=$(head -n1 $i)
+		echo "$pkg $ver"
+	done
+}
+
+pkg_remove() {
+	[ "$1" ] || exit 1
+	[ -f "$DB_DIR"/$1 ] || {
+		echo "pkg '$1' not installed!"
+		exit 1
+	}
+	ver=$(head -n1 "$DB_DIR"/$1)
+	for i in $(tail -n +2 "$DB_DIR"/$1 | tac); do
+		case $i in
+			*/) grep "^$i$" "$DB_DIR"/* | grep -qv "$DB_DIR"/$1: || rmdir -v "$i";;
+			 *) rm -v "$i";;
+		esac
+	done
+	rm -f "$DB_DIR"/$1
+	echo "Removed '$1-$ver'"
+}
+
 pkg_help() {
 	cat << EOF
 usage:
   $(basename $0) <cmd> [<arg>]
    
 cmd:
-  install <pkg>     install pkg with dependencies
-  depends <pkg>     show dependencies for pkg
-  deplist <pkg>     show dependencies tree for pkg
-  files   <pkg>     show list files installed by pkg
+  install   <pkg>   install pkg with dependencies
+  depends   <pkg>   show dependencies for pkg
+  deplist   <pkg>   show dependencies tree for pkg
+  files     <pkg>   show list files installed by pkg
+  remove    <pkg>   remove pkg
+  installed         list installed pkgs
+  integrity         check files and db integrity
    
 EOF
 }
@@ -101,9 +164,10 @@ cmd=$1
 shift
 
 if [ $(command -v pkg_$cmd) ]; then
-	pkg_$cmd $1
+	pkg_$cmd $@
 else
 	echo "Invalid command!"
 	exit 1
 fi
 
+exit 0

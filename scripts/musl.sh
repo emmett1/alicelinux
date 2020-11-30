@@ -34,6 +34,6 @@ ln -sf ../lib/libc.so $PKG/usr/bin/ldd
 mkdir -p $PKG/sbin
 #ln -sv /bin/true $PKG/sbin/ldconfig
 
-xinstall $version
+xinstall
 
 exit 0

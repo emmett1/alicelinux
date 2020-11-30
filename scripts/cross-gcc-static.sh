@@ -72,6 +72,6 @@ make -j1 install-gcc install-target-libgcc
 
 [ $PIPESTATUS = 0 ] || exit 1
 
-xinstall $version
+xinstall
 
 exit 0

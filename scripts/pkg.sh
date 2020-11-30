@@ -20,6 +20,6 @@ install -Dm644 $FILES_DIR/functions $PKG/var/lib/pkg/functions
 install -Dm644 $FILES_DIR/pkg.conf $PKG/etc/pkg.conf
 install -Dm755 $FILES_DIR/pkg $PKG/bin/pkg
 
-xinstall $version
+xinstall
 
 exit 0

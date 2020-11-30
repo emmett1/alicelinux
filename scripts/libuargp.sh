@@ -17,6 +17,6 @@ cd $SRC/$name-$_commit
 make
 make prefix=/usr DESTDIR=$PKG install
 
-xinstall $version
+xinstall
 
 exit 0

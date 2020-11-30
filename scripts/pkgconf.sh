@@ -34,6 +34,6 @@ make DESTDIR=$PKG install
 
 ln -sf pkgconf "$PKG"/usr/bin/pkg-config
 
-xinstall $version
+xinstall
 
 exit 0

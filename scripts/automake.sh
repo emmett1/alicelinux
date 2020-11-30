@@ -18,6 +18,6 @@ cd $SRC/$name-$version
 make
 make DESTDIR=$PKG install
 
-xinstall $version
+xinstall
 
 exit 0

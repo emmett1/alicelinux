@@ -33,6 +33,6 @@ make DESTDIR=$PKG install
 
 xstrip $PKG/usr/bin/make
 
-xinstall $version
+xinstall
 
 exit 0

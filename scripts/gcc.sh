@@ -63,6 +63,6 @@ install -Dm755 $FILES_DIR/c99 $PKG/usr/bin/c99
 
 rm -fr $PKG/usr/share/$name-$version
 
-xinstall $version
+xinstall
 
 exit 0

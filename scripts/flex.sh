@@ -20,6 +20,6 @@ make
 make DESTDIR=$PKG install
 ln -sv flex $PKG/usr/bin/lex
 
-xinstall $version
+xinstall
 
 exit 0

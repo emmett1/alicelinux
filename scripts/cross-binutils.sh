@@ -33,6 +33,6 @@ make configure-host
 make
 make install
 
-xinstall $version
+xinstall
 
 exit 0

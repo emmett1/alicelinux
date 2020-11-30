@@ -38,6 +38,6 @@ mkdir -pv $PKG/etc/udev/rules.d
 
 make DESTDIR=$PKG install
 
-xinstall $version
+xinstall
 
 exit 0

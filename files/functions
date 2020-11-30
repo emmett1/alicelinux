@@ -64,11 +64,13 @@ xcompressman() {
 }
 
 xcompressinfo() {
-	find "usr/share/info" -type f | while read -r file; do
-		if [ "$file" = "${file%%.gz}" ]; then
-			gzip -9 -f "$file"
-		fi
-	done
+	if [ -d "usr/share/info" ]; then
+		find "usr/share/info" -type f | while read -r file; do
+			if [ "$file" = "${file%%.gz}" ]; then
+				gzip -9 -f "$file"
+			fi
+		done
+	fi
 }
 
 xinstall() {
@@ -87,7 +89,7 @@ xinstall() {
 	find . ! -type d -name "*.la" -delete
 	
 	# remove empty dirs
-	find . -type d -empty -delete
+	#find . -type d -empty -delete
 	
 	# compress man-pages
 	xcompressman

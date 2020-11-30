@@ -36,6 +36,6 @@ make DESTDIR=$PKG install
 install -Dm644 $SOURCE_DIR/cacert.pem $PKG/etc/ssl/cert.pem
 #install -m755 $SRC/cert-update $PKG/usr/bin/cert-update
 
-xinstall $version
+xinstall
 
 exit 0

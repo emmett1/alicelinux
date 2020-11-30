@@ -30,6 +30,6 @@ find dest/include \( -name .install -o -name ..install.cmd \) -delete
 mkdir -p $PKG/usr/include
 cp -rv dest/include/* $PKG/usr/include
 
-xinstall $version
+xinstall
 
 exit 0

@@ -52,6 +52,6 @@ export PATH=$PATH:$PWD
 make tooldir=/usr
 make tooldir=/usr DESTDIR=$PKG install
 
-xinstall $version
+xinstall
 
 exit 0

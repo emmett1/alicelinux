@@ -66,6 +66,6 @@ cd build
 make
 make -j1 install
 
-xinstall $version
+xinstall
 
 exit 0

@@ -33,6 +33,6 @@ mkdir -p $PKG/lib
 mv -v $PKG/usr/lib/libz.so.* $PKG/lib
 ln -sfv ../../lib/$(readlink $PKG/usr/lib/libz.so) $PKG/usr/lib/libz.so
 
-xinstall $version
+xinstall
 
 exit 0
