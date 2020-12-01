@@ -7,15 +7,41 @@ requiredarg() {
 	}
 }
 
+isinstalled() {
+	[ "$1" ] || return
+	[ -f "$DB_DIR"/$1 ] && return 0 || return 1
+}
+
+isexist() {
+	[ "$1" ] || return
+	[ -f "$SCRIPTS_DIR"/$1.sh ] && return 0 || return 1
+}
+
 pkg_install() {
 	for i in $@; do
 		case $i in
 			-dryrun) dryrun=1;;
+			-nodep) nodep=1;;
+			-*) opt="$opt $i";;
 			*) pkg="$pkg $i";;
 		esac
 	done
-	for i in $(pkg_deplist $pkg); do
-		[ -f "$DB_DIR"/$i ] && continue
+	holdpkg="$pkg"; pkg=
+	for i in $holdpkg; do
+		if isexist $i; then
+			isinstalled $i || pkg="$pkg $i"
+		fi
+	done
+	[ "$pkg" ] || exit 0
+	if [ "$nodep" != 1 ]; then
+		pkg="$(pkg_deplist $pkg)"
+	fi
+	for i in $pkg; do
+		if [ -f "$DB_DIR"/$i ]; then
+			if [ "$nodep" != 1 ]; then
+				continue
+			fi
+		fi
 		[ -f "$SCRIPTS_DIR"/$i.sh ] || {
 			echo "script '$i' not exist!"
 			continue
@@ -24,7 +50,7 @@ pkg_install() {
 			echo "(dryrun) Running script $i..."
 		else
 			echo "Running script $i..."
-			sh "$SCRIPTS_DIR"/$i.sh || exit 1
+			sh "$SCRIPTS_DIR"/$i.sh $opt || exit 1
 		fi
 	done
 }
@@ -54,9 +80,9 @@ pkg_depends() {
 }
 
 pkg_files() {
-	[ "$1" ] || exit 1
+	requiredarg $1
 	[ -f "$DB_DIR"/$1 ] || {
-		echo "pkg '$1' not installed!"
+		echo "error: pkg '$1' not installed"
 		exit 1
 	}
 	tail -n +2 "$DB_DIR"/$1
@@ -83,16 +109,16 @@ pkg_installed() {
 }
 
 pkg_remove() {
-	[ "$1" ] || exit 1
+	requiredarg $1
 	[ -f "$DB_DIR"/$1 ] || {
 		echo "pkg '$1' not installed!"
 		exit 1
 	}
 	ver=$(head -n1 "$DB_DIR"/$1)
-	for i in $(tail -n +2 "$DB_DIR"/$1 | tac); do
-		case $i in
-			*/) grep "^$i$" "$DB_DIR"/* | grep -qv "$DB_DIR"/$1: || rmdir -v "$i";;
-			 *) rm -v "$i";;
+	tail -n +2 "$DB_DIR"/$1 | tac | while read -r line; do
+		case $line in
+			*/) grep "^$i$" "$DB_DIR"/* | grep -qv "$DB_DIR"/$1: || rmdir -v "$line";;
+			 *) rm -v "$line";;
 		esac
 	done
 	rm -f "$DB_DIR"/$1
@@ -166,7 +192,7 @@ shift
 if [ $(command -v pkg_$cmd) ]; then
 	pkg_$cmd $@
 else
-	echo "Invalid command!"
+	echo "error: invalid command"
 	exit 1
 fi
 

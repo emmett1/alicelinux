@@ -192,7 +192,9 @@ scriptname=${scriptname%.sh}
 PKG=$WORK_DIR/pkg.$scriptname
 SRC=$WORK_DIR/src.$scriptname
 
-[ "$1" = "u" ] && upgrade=1
+if [ "$1" = "-u" ] || [ "$1" = "-upgrade" ]; then
+	upgrade=1
+fi
 
 if [ "$ROOT_DIR" ]; then
 	[ -d $ROOT_DIR ] || mkdir -p $ROOT_DIR
