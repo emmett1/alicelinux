@@ -1,13 +1,10 @@
-#!/bin/sh
+#!/bin/sh -e
 
-set -e
-
-if [ -f $(dirname $(dirname $(realpath $0)))/main.conf ]; then
-	. $(dirname $(dirname $(realpath $0)))/main.conf
-	. $(dirname $(dirname $(realpath $0)))/crosspkg.conf
+if [ -f $(dirname $(dirname $(realpath $0)))/xpkg.conf ]; then
+	. $(dirname $(dirname $(realpath $0)))/xpkg.conf
 	. $(dirname $(dirname $(realpath $0)))/files/functions
 else
-	. /etc/pkg.conf
+	. /etc/xpkg.conf
 	. /var/lib/pkg/functions
 fi
 

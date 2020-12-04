@@ -1,8 +1,6 @@
-#!/bin/sh
+#!/bin/sh -e
 
-set -e
-
-. /etc/pkg.conf
+. /etc/xpkg.conf
 . /var/lib/pkg/functions
 
 #depends: python3-setuptools ninja

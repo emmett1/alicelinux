@@ -2,72 +2,127 @@
 
 set -e
 
-CARCH="$(uname -m)"
-TARGET="$CARCH-pc-linux-musl"
+[ -f ./config ] && . ./config
+
+CARCH="${CARCH:-x86_64}"
+TARGET="$CARCH-linux-musl"
 HOST="$(echo $MACHTYPE | sed "s/-[^-]*/-cross/")"
 
-MAKEFLAGS="-j$(nproc)"
-CFLAGS="-O2 -march=x86-64 -pipe"
-CXXFLAGS="${CFLAGS}"
+THREADS="${THREADS:-$(nproc)}"
+MAKEFLAGS="-j$THREADS"
+CFLAGS="${CFLAGS:--O2 -march=x86-64 -pipe}"
+CXXFLAGS="${CXXFLAGS:-${CFLAGS}}"
 
 TOPDIR="$PWD"
-TCDIR="$TOPDIR/$TARGET-crosstoolchain"
-ROOT_DIR="$TOPDIR/$TARGET-rootfs"
+TCDIR="${TCDIR:-$TOPDIR/$TARGET-crosstoolchain}"
+ROOT_DIR="${ROOT_DIR:-$TOPDIR/$TARGET-rootfs}"
 
-SOURCE_DIR="$TOPDIR/sources"
-LOG_DIR="$TOPDIR/log"
-WORK_DIR="$TOPDIR/work"
-FILES_DIR="$TOPDIR/files"
+SOURCE_DIR="${SOURCE_DIR:-$TOPDIR/sources}"
+LOG_DIR="${LOG_DIR:-$TOPDIR/log}"
+WORK_DIR="${WORK_DIR:-$TOPDIR/work}"
+FILES_DIR="${FILES_DIR:-$TOPDIR/files}"
 
 PATH="$TCDIR/bin:$PATH"
 
-[ -f ./config ] && . ./config
+ccachebin=$(command -v ccache)
 
-cat << EOF > main.conf
+if [ "$ccachebin" ]; then
+	mkdir -p $TOPDIR/ccache/cache	
+	for i in gcc g++ c++; do
+		ln -sf "$ccachebin" $TOPDIR/ccache/$i
+		ln -sf "$ccachebin" $TOPDIR/ccache/$TARGET-$i
+	done
+	CCACHE_DIR="$TOPDIR/ccache"
+	PATH="$TOPDIR/ccache:$PATH"
+fi
+
+cat << EOF > xpkg.conf
+crossbuild() {
+	export CFLAGS="$CFLAGS"
+	export CXXFLAGS="$CXXFLAGS"
+
+	export CC="ccache $TARGET-gcc"
+	export CXX="ccache $TARGET-g++"
+	export AR="$TARGET-ar"
+	export AS="$TARGET-as"
+	export RANLIB="$TARGET-ranlib"
+	export LD="$TARGET-ld"
+	export STRIP="$TARGET-strip"
+
+	export PKG_CONFIG_PATH="$ROOT_DIR/usr/lib/pkgconfig:$ROOT_DIR/usr/share/pkgconfig"
+	#export PKG_CONFIG_SYSROOT_DIR="$ROOT_DIR"
+}
+
+export HOST="$HOST"
+export TARGET="$TARGET"
+export CARCH="$CARCH"
+export MAKEFLAGS="$MAKEFLAGS"
+
 export ROOT_DIR="$ROOT_DIR"
 
 export TCDIR="$TCDIR"
 export PATH=$PATH
 
+export CCACHE_DIR="$CCACHE_DIR/cache"
+
 BOOTSTRAP=1
 
 CROSS_COMPILE="$TARGET-"
 
-SOURCE_DIR="$SOURCE_DIR"
-WORK_DIR="$WORK_DIR"
-LOG_DIR="$LOG_DIR"
 FILES_DIR="$FILES_DIR"
+
+# get the script name
+scriptname=\${0##*/}
+scriptname=\${scriptname%.sh}
+
+case \$scriptname in
+	cross-*) unset CFLAGS CXXFLAGS;;
+	*)       crossbuild;;
+esac
 EOF
 
-cat << EOF > pkg.conf
-export HOST="$HOST"
-export TARGET="$TARGET"
-export CARCH="$CARCH"
+#cat << EOF > main.conf
+#export HOST="$HOST"
+#export TARGET="$TARGET"
+#export CARCH="$CARCH"
+#export MAKEFLAGS="$MAKEFLAGS"
 
-export MAKEFLAGS="$MAKEFLAGS"
-export CFLAGS="$CFLAGS"
-export CXXFLAGS="$CXXFLAGS"
+#export ROOT_DIR="$ROOT_DIR"
 
-export CC="$TARGET-gcc"
-export CXX="$TARGET-g++"
-export AR="$TARGET-ar"
-export AS="$TARGET-as"
-export RANLIB="$TARGET-ranlib"
-export LD="$TARGET-ld"
-export STRIP="$TARGET-strip"
+#export TCDIR="$TCDIR"
+#export PATH=$PATH
 
-export PKG_CONFIG_PATH="$ROOT_DIR/usr/lib/pkgconfig:$ROOT_DIR/usr/share/pkgconfig"
-#export PKG_CONFIG_SYSROOT_DIR="$ROOT_DIR"
-EOF
+#export CCACHE_DIR="$CCACHE_DIR/cache"
 
-cat << EOF > crosspkg.conf
-export HOST="$HOST"
-export TARGET="$TARGET"
-export CARCH="$CARCH"
+#BOOTSTRAP=1
 
-export MAKEFLAGS="$MAKEFLAGS"
-export CFLAGS=
-export CXXFLAGS=
-EOF
+#CROSS_COMPILE="$TARGET-"
+
+#SOURCE_DIR="$SOURCE_DIR"
+#WORK_DIR="$WORK_DIR"
+#LOG_DIR="$LOG_DIR"
+#FILES_DIR="$FILES_DIR"
+#EOF
+
+#cat << EOF > pkg.conf
+#export CFLAGS="$CFLAGS"
+#export CXXFLAGS="$CXXFLAGS"
+
+#export CC="ccache $TARGET-gcc"
+#export CXX="ccache $TARGET-g++"
+#export AR="$TARGET-ar"
+#export AS="$TARGET-as"
+#export RANLIB="$TARGET-ranlib"
+#export LD="$TARGET-ld"
+#export STRIP="$TARGET-strip"
+
+#export PKG_CONFIG_PATH="$ROOT_DIR/usr/lib/pkgconfig:$ROOT_DIR/usr/share/pkgconfig"
+##export PKG_CONFIG_SYSROOT_DIR="$ROOT_DIR"
+#EOF
+
+#cat << EOF > crosspkg.conf
+#export CFLAGS=
+#export CXXFLAGS=
+#EOF
 
 exit 0

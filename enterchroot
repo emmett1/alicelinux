@@ -1,15 +1,11 @@
 #!/bin/sh
 
-HOLDPATH=$PATH
+#ROOT_DIR="$TOPDIR/$TARGET-rootfs"
+ROOT_DIR="$TOPDIR/$TARGET-rootfs"
 
-if [ -f ./main.conf ]; then
-	. ./main.conf
-else
-	echo "error: please run ./genconf first"
-	exit 1
+if [ -f ./config ]; then
+	. ./config
 fi
-
-PATH=$HOLDPATH
 
 unmount() {
 	while true; do

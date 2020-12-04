@@ -1,11 +1,10 @@
-#!/bin/sh
+#!/bin/sh -e
 #
 # an example package build script
 #
-set -e
 
 # sourcing required configs and functions
-. /etc/pkg.conf
+. /etc/xpkg.conf
 . /var/lib/pkg/functions
 
 # define dependencies here, it will automatically solved by pkg

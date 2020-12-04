@@ -1,7 +1,5 @@
 config
-*.conf
-log/
-sources/
-work/
+xpkg.conf
 *-crosstoolchain/
 *-rootfs/
+ccache/

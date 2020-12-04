@@ -1,12 +1,16 @@
-#!/bin/sh
+#!/bin/sh -e
 
-set -e
+CARCH=x86_64
+TARGET="$CARCH-linux-musl"
+ROOT_DIR="$PWD/$TARGET-rootfs"
 
 ./genconf
+[ -f ./config ] && . ./config
 
 for s in linux-headers cross-binutils cross-gcc-static musl \
 	cross-gcc filesystem zlib binutils m4 libgmp libmpfr \
-	libmpc gcc make file busybox libressl rsync curl pkg; do
+	libmpc gcc make file busybox libressl rsync curl xpkg; do
+	[ -f "$ROOT_DIR"/var/lib/pkg/db/$s ] && continue
 	cd scripts
 	echo "Running script $s.sh"
 	./$s.sh

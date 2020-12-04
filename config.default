@@ -1,4 +1,7 @@
-#MAKEFLAGS="-j$(nproc)"
+CARCH=x86_64
+
+#THREADS="$(nproc)"
+
 #CFLAGS="-O2 -march=x86-64 -pipe"
 #CXXFLAGS="${CFLAGS}"
 
