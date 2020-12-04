@@ -3,7 +3,7 @@
 . /etc/xpkg.conf
 . /var/lib/pkg/functions
 
-#depends: pixman libdrm
+#depends: pixman libdrm libx11 libglvnd libxkbfile libxfont2 mesa libepoxy
 
 name=xorg-server
 version=1.20.9

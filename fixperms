@@ -11,8 +11,8 @@ as_root()
 	fi
 }
 
-if [ -f ./main.conf ]; then
-	. ./main.conf
+if [ -f ./xpkg.conf ]; then
+	. ./xpkg.conf
 else
 	echo "error: please run ./genconf first"
 	exit 1

@@ -14,17 +14,23 @@ xunpack ${url##*/}
 
 cd $SRC/Python-$version
 
-CXX="/usr/bin/g++"              \
-./configure --prefix=/usr       \
-			--enable-shared     \
-			--with-system-expat \
-			--with-system-ffi   \
-			--without-ensurepip
+./configure \
+	--prefix=/usr \
+	--enable-shared \
+	--with-system-expat \
+	--with-system-ffi \
+	--without-ensurepip \
+	--without-doc-strings
 make
 make DESTDIR=$PKG install
 
 chmod -v 755 $PKG/usr/lib/libpython${version%.*}.so
 chmod -v 755 $PKG/usr/lib/libpython3.so
+
+rm -rf $PKG/usr/lib/python${version%.*}/test
+rm -rf $PKG/usr/lib/python${version%.*}/*/test
+rm -rf $PKG/usr/lib/python${version%.*}/*/tests
+rm -rf $PKG/usr/lib/python${version%.*}/pydoc*
 
 xinstall
 

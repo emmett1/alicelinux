@@ -50,7 +50,7 @@ pkg_install() {
 			echo "(dryrun) Running script $i..."
 		else
 			echo "Running script $i..."
-			sh "$SCRIPTS_DIR"/$i.sh $opt || exit 1
+			"$SCRIPTS_DIR"/$i.sh $opt || exit 1
 		fi
 	done
 }
