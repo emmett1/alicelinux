@@ -1,5 +1,8 @@
 #!/bin/sh
 
+CARCH="${CARCH:-x86_64}"
+TARGET="$CARCH-linux-musl"
+TOPDIR="$PWD"
 #ROOT_DIR="$TOPDIR/$TARGET-rootfs"
 ROOT_DIR="$TOPDIR/$TARGET-rootfs"
 
