@@ -5,7 +5,7 @@ TARGET="$CARCH-linux-musl"
 ROOT_DIR="$PWD/$TARGET-rootfs"
 
 ./genconf
-. ./config
+[ -f ./config ] && . ./config
 
 for s in linux-headers cross-binutils cross-gcc-static musl \
 	cross-gcc filesystem zlib binutils m4 libgmp libmpfr \
