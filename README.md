@@ -6,9 +6,10 @@ An experimental minimal musl based distro
 * git
 * curl
 * base-devel (gcc)
+* ccache
 
 ### List for Build
-1. Execute ./genconf generate main.conf pkg.conf for build-cross 
+1. Execute ./genconf generate xpkg.conf for build-cross 
 2. Execute ./build for build cross-compile
 
 #### Wiki Alicelinux
