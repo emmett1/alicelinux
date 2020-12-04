@@ -4,7 +4,7 @@ xfetch() {
 	[ "$1" ] || exit 1
 	filename=${1##*/}
 	[ -f "$SOURCE_DIR"/$filename ] && return 0
-	msg "Fetching $filename..."
+	msg "Fetching $1..."
 	curl -C - -L --fail --ftp-pasv --retry 3 --retry-delay 3 -o "$SOURCE_DIR"/$filename.part $1 && \
 		mv "$SOURCE_DIR"/$filename.part "$SOURCE_DIR"/$filename || \
 		exit 1
@@ -184,7 +184,7 @@ DB_DIR="$XPKG_DIR/db"
 SOURCE_DIR="$XPKG_DIR/sources"
 LOG_DIR="$XPKG_DIR/log"
 WORK_DIR="$XPKG_DIR/work"
-FILES_DIR="${FILES_DIR:-XPKG_DIR/files}"
+FILES_DIR="${FILES_DIR:-$XPKG_DIR/files}"
 
 PKG="$WORK_DIR/pkg.$scriptname"
 SRC="$WORK_DIR/src.$scriptname"
