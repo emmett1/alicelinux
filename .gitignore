@@ -3,3 +3,4 @@ xpkg.conf
 *-crosstoolchain/
 *-rootfs/
 ccache/
+alicelinux-*.tar.xz
