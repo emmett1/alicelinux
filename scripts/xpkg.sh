@@ -9,12 +9,13 @@ else
 fi
 
 name=pkg
-version=20201202
+version=20201207
 
 cd $SRC
 
 install -Dm644 $FILES_DIR/functions $PKG/var/lib/pkg/functions
 install -Dm755 $FILES_DIR/xpkg $PKG/bin/xpkg
+install -Dm755 $FILES_DIR/scriptupdate $PKG/bin/scriptupdate
 
 install -d $PKG/etc
 cat > $PKG/etc/xpkg.conf << EOF
