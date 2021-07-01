@@ -21,12 +21,27 @@ if [ "$BOOTSTRAP" ]; then
 	flags="--host=$TARGET --build=$HOST"
 fi
 
+# Local build
+mkdir -p build
+pushd build
+CC="" \
+CXX="" \
+AS="" \
+AR="" \
+LD="" \
+RANLIB="" \
+../configure --disable-bzlib \
+	--disable-libseccomp \
+	--disable-xzlib \
+	--disable-zlib
+popd
+
 ./configure $flags \
 	--prefix=/usr \
 	--enable-fsect-man5 \
 	--enable-static \
 	--disable-libseccomp
-make
+make FILE_COMPILE=$(pwd)/build/src/file
 make DESTDIR=$PKG install
 
 xinstall
