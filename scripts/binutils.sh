@@ -1,21 +1,15 @@
 #!/bin/sh -e
 
-if [ -f $(dirname $(dirname $(realpath $0)))/xpkg.conf ]; then
-	. $(dirname $(dirname $(realpath $0)))/xpkg.conf
-	. $(dirname $(dirname $(realpath $0)))/files/functions
-else
-	. /etc/xpkg.conf
-	. /var/lib/pkg/functions
-fi
+cd $(dirname $0) ; CWD=$(pwd); . $CWD/functions
 
 name=binutils
-version=2.35.1
-url=https://ftp.gnu.org/gnu/binutils/$name-$version.tar.xz
+version=2.39
 
-xfetch $url
-xunpack $name-$version.tar.xz
+fetchunpack https://ftp.gnu.org/gnu/binutils/$name-$version.tar.xz
 
-cd $SRC/$name-$version
+cd $WORKDIR/$name-$version
+
+patch -Np1 -i $FILEDIR/binutils-2.39-musl-fix.patch
 
 if [ "$BOOTSTRAP" ]; then
 	flags="--host=$TARGET --build=$HOST --target=$TARGET --with-sysroot=$ROOT_DIR"
@@ -47,8 +41,6 @@ export PATH=$PATH:$PWD
 	 --disable-multilib  \
 	 --with-lib-path=/usr/lib:/lib
 make tooldir=/usr
-make tooldir=/usr DESTDIR=$PKG install
+make tooldir=/usr -j1 DESTDIR=$PKG install
 
-xinstall
-
-exit 0
+pkginstall $version

@@ -1,21 +1,13 @@
 #!/bin/sh -e
 
-if [ -f $(dirname $(dirname $(realpath $0)))/xpkg.conf ]; then
-	. $(dirname $(dirname $(realpath $0)))/xpkg.conf
-	. $(dirname $(dirname $(realpath $0)))/files/functions
-else
-	. /etc/xpkg.conf
-	. /var/lib/pkg/functions
-fi
+cd $(dirname $0) ; CWD=$(pwd); . $CWD/functions
 
 name=musl
-version=1.2.1
-url=https://musl.libc.org/releases/musl-$version.tar.gz
+version=1.2.3
 
-xfetch $url
-xunpack $name-$version.tar.gz
+fetchunpack https://musl.libc.org/releases/musl-$version.tar.gz
 
-cd $SRC/$name-$version
+cd $WORKDIR/$name-$version
 
 if [ "$BOOTSTRAP" ]; then
 	flags="--host=$TARGET --build=$HOST --target=$TARGET"
@@ -29,8 +21,5 @@ make DESTDIR=$PKG install
 mkdir -p $PKG/usr/bin
 ln -sf ../lib/libc.so $PKG/usr/bin/ldd
 mkdir -p $PKG/sbin
-#ln -sv /bin/true $PKG/sbin/ldconfig
 
-xinstall
-
-exit 0
+pkginstall $version

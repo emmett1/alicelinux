@@ -1,21 +1,13 @@
 #!/bin/sh -e
 
-if [ -f $(dirname $(dirname $(realpath $0)))/xpkg.conf ]; then
-	. $(dirname $(dirname $(realpath $0)))/xpkg.conf
-	. $(dirname $(dirname $(realpath $0)))/files/functions
-else
-	. /etc/xpkg.conf
-	. /var/lib/pkg/functions
-fi
+cd $(dirname $0) ; CWD=$(pwd); . $CWD/functions
 
 name=curl
-version=7.73.0
-url=https://curl.haxx.se/download/$name-$version.tar.xz
+version=7.85.0
 
-xfetch $url
-xunpack $name-$version.tar.xz
+fetchunpack https://curl.haxx.se/download/$name-$version.tar.xz
 
-cd $SRC/$name-$version
+cd $WORKDIR/$name-$version
 
 if [ "$BOOTSTRAP" ]; then
 	flags="--host=$TARGET --build=$HOST"
@@ -26,10 +18,9 @@ fi
 	--disable-static \
 	--enable-threaded-resolver \
 	--with-ca-bundle=/etc/ssl/cert.pem \
+	--with-openssl \
 	ac_cv_sizeof_off_t=8
 make
 make DESTDIR=$PKG install
 
-xinstall
-
-exit 0
+pkginstall $version

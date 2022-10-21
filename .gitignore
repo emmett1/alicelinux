@@ -1,6 +1,5 @@
-config
-xpkg.conf
-*-crosstoolchain/
+.done
+*conf
+*-crosstool/
 *-rootfs/
-ccache/
-alicelinux-*.tar.xz
+sources/

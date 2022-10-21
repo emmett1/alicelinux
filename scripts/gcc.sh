@@ -1,21 +1,13 @@
 #!/bin/sh -e
 
-if [ -f $(dirname $(dirname $(realpath $0)))/xpkg.conf ]; then
-	. $(dirname $(dirname $(realpath $0)))/xpkg.conf
-	. $(dirname $(dirname $(realpath $0)))/files/functions
-else
-	. /etc/xpkg.conf
-	. /var/lib/pkg/functions
-fi
+cd $(dirname $0) ; CWD=$(pwd); . $CWD/functions
 
 name=gcc
-version=10.2.0
-url=https://ftp.gnu.org/gnu/$name/$name-$version/$name-$version.tar.xz
+version=12.2.0
 
-xfetch $url
-xunpack $name-$version.tar.xz
+fetchunpack https://ftp.gnu.org/gnu/$name/$name-$version/$name-$version.tar.xz
 
-cd $SRC/$name-$version
+cd $WORKDIR/$name-$version
 
 if [ "$BOOTSTRAP" ]; then
 	flags="--host=$TARGET --build=$HOST --target=$TARGET"
@@ -55,11 +47,9 @@ ln -sfv ../../lib/gcc/$(${CC:-gcc} -dumpmachine)/$version/liblto_plugin.so \
 mkdir -pv $PKG/usr/share/gdb/auto-load/usr/lib
 mv -v $PKG/usr/lib/*gdb.py $PKG/usr/share/gdb/auto-load/usr/lib
 
-install -Dm755 $FILES_DIR/c89 $PKG/usr/bin/c89
-install -Dm755 $FILES_DIR/c99 $PKG/usr/bin/c99
+install -Dm755 $FILEDIR/c89 $PKG/usr/bin/c89
+install -Dm755 $FILEDIR/c99 $PKG/usr/bin/c99
 
 rm -fr $PKG/usr/share/$name-$version
 
-xinstall
-
-exit 0
+pkginstall $version

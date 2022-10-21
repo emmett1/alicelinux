@@ -1,33 +1,19 @@
 #!/bin/sh -e
 
-if [ -f $(dirname $(dirname $(realpath $0)))/xpkg.conf ]; then
-	. $(dirname $(dirname $(realpath $0)))/xpkg.conf
-	. $(dirname $(dirname $(realpath $0)))/files/functions
-else
-	. /etc/xpkg.conf
-	. /var/lib/pkg/functions
-fi
+cd $(dirname $0) ; CWD=$(pwd); . $CWD/functions
 
 name=gcc
-version=10.2.0
+version=12.2.0
 gmp_ver=6.2.1
 mpfr_ver=4.1.0
 mpc_ver=1.2.1
-url=https://ftp.gnu.org/gnu/$name/$name-$version/$name-$version.tar.xz
-url1=https://ftp.gnu.org/gnu/gmp/gmp-$gmp_ver.tar.xz
-url2=https://www.mpfr.org/mpfr-$mpfr_ver/mpfr-$mpfr_ver.tar.xz
-url3=https://ftp.gnu.org/gnu/mpc/mpc-$mpc_ver.tar.gz
 
-xfetch $url
-xfetch $url1
-xfetch $url2
-xfetch $url3
-xunpack $name-$version.tar.xz
-xunpack gmp-$gmp_ver.tar.xz
-xunpack mpfr-$mpfr_ver.tar.xz
-xunpack mpc-$mpc_ver.tar.gz
+fetchunpack https://ftp.gnu.org/gnu/$name/$name-$version/$name-$version.tar.xz
+fetchunpack https://ftp.gnu.org/gnu/gmp/gmp-$gmp_ver.tar.xz
+fetchunpack https://www.mpfr.org/mpfr-$mpfr_ver/mpfr-$mpfr_ver.tar.xz
+fetchunpack https://ftp.gnu.org/gnu/mpc/mpc-$mpc_ver.tar.gz
 
-cd $SRC/$name-$version
+cd $WORKDIR/$name-$version
 
 mv ../gmp-$gmp_ver gmp
 mv ../mpfr-$mpfr_ver mpfr
@@ -43,13 +29,13 @@ mkdir build
 cd build
 
 ../configure \
-	--prefix="$TCDIR" \
+	--prefix="$CROSSTOOL" \
 	--target="$TARGET" \
 	--build="$HOST" \
 	--host="$HOST" \
-	--libexecdir="$TCDIR"/lib \
-	--with-sysroot="$ROOT_DIR" \
-	--with-local-prefix="$ROOT_DIR" \
+	--libexecdir="$CROSSTOOL"/lib \
+	--with-sysroot="$ROOTFS" \
+	--with-local-prefix="$ROOTFS" \
 	--with-native-system-header-dir="/usr/include" \
 	--disable-nls \
 	--disable-shared \
@@ -67,6 +53,4 @@ cd build
 make all-gcc all-target-libgcc
 make -j1 install-gcc install-target-libgcc
 
-xinstall
-
-exit 0
+rm -fr $WORKDIR $PKG

@@ -1,21 +1,23 @@
 #!/bin/sh -e
 
-if [ -f $(dirname $(dirname $(realpath $0)))/xpkg.conf ]; then
-	. $(dirname $(dirname $(realpath $0)))/xpkg.conf
-	. $(dirname $(dirname $(realpath $0)))/files/functions
-else
-	. /etc/xpkg.conf
-	. /var/lib/pkg/functions
-fi
+cd $(dirname $0) ; CWD=$(pwd); . $CWD/functions
 
 name=file
 version=5.39
-url=ftp://ftp.astron.com/pub/$name/$name-$version.tar.gz
 
-xfetch $url
-xunpack $name-$version.tar.gz
+fetchunpack ftp://ftp.astron.com/pub/$name/$name-$version.tar.gz
 
-cd $SRC/$name-$version
+cd $WORKDIR/$name-$version
+
+mkdir build
+cd build
+CC=gcc ../configure \
+	--disable-bzlib      \
+	--disable-libseccomp \
+	--disable-xzlib      \
+	--disable-zlib
+make
+cd -
 
 if [ "$BOOTSTRAP" ]; then
 	flags="--host=$TARGET --build=$HOST"
@@ -26,9 +28,7 @@ fi
 	--enable-fsect-man5 \
 	--enable-static \
 	--disable-libseccomp
-make
+make FILE_COMPILE=$PWD/build/src/file
 make DESTDIR=$PKG install
 
-xinstall
-
-exit 0
+pkginstall $version

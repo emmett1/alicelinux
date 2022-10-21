@@ -1,25 +1,17 @@
 #!/bin/sh -e
 
-if [ -f $(dirname $(dirname $(realpath $0)))/xpkg.conf ]; then
-	. $(dirname $(dirname $(realpath $0)))/xpkg.conf
-	. $(dirname $(dirname $(realpath $0)))/files/functions
-else
-	. /etc/xpkg.conf
-	. /var/lib/pkg/functions
-fi
+cd $(dirname $0) ; CWD=$(pwd); . $CWD/functions
 
 name=filesystem
-version=20200712
-
-cd $SRC
+version=1
 
 #  root dirs
 for d in dev proc sys run bin boot etc/opt home lib mnt \
 	opt sbin srv var run; do
 	mkdir -p $PKG/$d
 done
-install -d -m 555 proc
-install -d -m 555 sys
+install -d -m 555 $PKG/proc
+install -d -m 555 $PKG/sys
 install -d -m 0750 $PKG/root
 install -d -m 1777 $PKG/tmp $PKG/var/tmp
 
@@ -56,7 +48,7 @@ chmod 600  $PKG/var/log/btmp
 #mknod -m 600 $PKG/dev/console c 5 1
 #mknod -m 666 $PKG/dev/null c 1 3
 
-cd $FILES_DIR
+cd $FILEDIR
 install -m644 passwd $PKG/etc
 install -m644 group $PKG/etc
 #install -m644 resolv.conf $PKG/etc
@@ -76,9 +68,4 @@ install -d $PKG/etc/init.d
 install -m755 rcS $PKG/etc/init.d
 install -m644 inittab $PKG/etc
 
-#install -m644 issue $PKG/etc
-cd - >/dev/null
-
-xinstall
-
-exit 0
+pkginstall $version

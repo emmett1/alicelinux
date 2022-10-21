@@ -1,27 +1,18 @@
 #!/bin/sh -e
 
-if [ -f $(dirname $(dirname $(realpath $0)))/xpkg.conf ]; then
-	. $(dirname $(dirname $(realpath $0)))/xpkg.conf
-	. $(dirname $(dirname $(realpath $0)))/files/functions
-else
-	. /etc/xpkg.conf
-	. /var/lib/pkg/functions
-fi
+cd $(dirname $0) ; CWD=$(pwd); . $CWD/functions
 
 name=libressl
 version=3.3.0
-url=https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/$name-$version.tar.gz
-certurl=https://curl.haxx.se/ca/cacert.pem
 
-xfetch $url
-xfetch $certurl
-xunpack $name-$version.tar.gz
+fetchunpack https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/$name-$version.tar.gz
+fetch https://curl.haxx.se/ca/cacert.pem
 
-cd $SRC/$name-$version
+cd $WORKDIR/$name-$version
 
 if [ "$BOOTSTRAP" ]; then
 	flags="--host=$TARGET --build=$HOST"
-	CFLAGS="-L$ROOT_DIR/usr/lib $CFLAGS"
+	CFLAGS="-L$ROOTFS/usr/lib $CFLAGS"
 fi
 
 ./configure $flags \
@@ -30,9 +21,6 @@ fi
 make
 make DESTDIR=$PKG install
 
-install -Dm644 $SOURCE_DIR/cacert.pem $PKG/etc/ssl/cert.pem
-#install -m755 $SRC/cert-update $PKG/usr/bin/cert-update
+install -Dm644 $SRCDIR/cacert.pem $PKG/etc/ssl/cert.pem
 
-xinstall
-
-exit 0
+pkginstall $version

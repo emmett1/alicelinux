@@ -1,12 +1,6 @@
 #!/bin/sh -e
 
-if [ -f $(dirname $(dirname $(realpath $0)))/xpkg.conf ]; then
-	. $(dirname $(dirname $(realpath $0)))/xpkg.conf
-	. $(dirname $(dirname $(realpath $0)))/files/functions
-else
-	. /etc/xpkg.conf
-	. /var/lib/pkg/functions
-fi
+cd $(dirname $0) ; CWD=$(pwd); . $CWD/functions
 
 sety() {
 	while [ "$1" ]; do
@@ -24,12 +18,10 @@ setn() {
 
 name=busybox
 version=1.32.0
-url=https://www.busybox.net/downloads/$name-$version.tar.bz2
 
-xfetch $url
-xunpack $name-$version.tar.bz2
+fetchunpack https://www.busybox.net/downloads/$name-$version.tar.bz2
 
-cd $SRC/$name-$version
+cd $WORKDIR/$name-$version
 
 if [ "$BOOTSTRAP" ]; then
 	crossopt="ARCH=$CARCH CROSS_COMPILE=$TARGET-"
@@ -45,6 +37,4 @@ make $crossopt CONFIG_PREFIX="$PKG" install
 install -d $PKG/usr/share/$name
 cp .config $PKG/usr/share/$name/config
 
-xinstall
-
-exit 0
+pkginstall $version
