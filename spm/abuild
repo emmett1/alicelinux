@@ -1,0 +1,9 @@
+name=spm
+version=20240326
+release=1
+source="$name-$version.tar.gz::https://github.com/emmett1/spm/archive/741b29f0a883dc933ae6786658596a087181bbc4.tar.gz"
+
+pkg_build() {
+	install -d $PKG/usr/bin
+	cp spm $PKG/usr/bin
+}
