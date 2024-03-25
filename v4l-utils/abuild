@@ -1,0 +1,7 @@
+# Depends: argp-standalone
+
+name=v4l-utils
+version=1.24.1
+release=1
+source="https://www.linuxtv.org/downloads/${name}/${name}-${version}.tar.bz2"
+build_opt="--disable-v4l2-tracer" # XXX: build v4l2-tracer failed on musl

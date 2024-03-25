@@ -1,0 +1,6 @@
+# Depends: libxaw libx11 libxmu libxft libxrender libxkbfile util-macros
+
+name=xclock
+version=1.1.1
+release=1
+source="https://www.x.org/pub/individual/app/$name-$version.tar.xz"

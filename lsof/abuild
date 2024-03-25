@@ -1,0 +1,4 @@
+name=lsof
+version=4.99.3
+release=1
+source="https://github.com/lsof-org/lsof/releases/download/$version/lsof-$version.tar.gz"

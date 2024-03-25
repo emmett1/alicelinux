@@ -1,0 +1,7 @@
+# Depends: gtk2 dbus-glib intltool
+
+name=lxappearance
+version=0.6.3
+release=1
+source="https://downloads.sourceforge.net/lxde/$name-$version.tar.xz"
+build_opt="--enable-dbus"

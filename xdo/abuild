@@ -1,0 +1,6 @@
+# Depends: xcb-util-wm xcb-util
+
+name=xdo
+version=0.5.7
+release=1
+source="https://github.com/baskerville/${name}/archive/${version}/${name}-${version}.tar.gz"

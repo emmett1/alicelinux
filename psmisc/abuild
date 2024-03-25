@@ -1,4 +1,0 @@
-name=psmisc
-version=23.6
-release=1
-source="https://sourceforge.net/projects/$name/files/$name/$name-$version.tar.xz"

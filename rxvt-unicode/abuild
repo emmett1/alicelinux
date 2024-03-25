@@ -1,0 +1,7 @@
+# Depends: libptytty libxext fontconfig libxft
+
+name=rxvt-unicode
+version=9.31
+release=1
+source="http://dist.schmorp.de/${name}/${name}-${version}.tar.bz2
+	screen_c_9_30.diff"

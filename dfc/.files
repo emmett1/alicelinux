@@ -1,0 +1,15 @@
+drwxr-xr-x root/root    usr/
+drwxr-xr-x root/root    usr/bin/
+-rwxr-xr-x root/root    usr/bin/dfc
+drwxr-xr-x root/root    usr/etc/
+drwxr-xr-x root/root    usr/etc/xdg/
+drwxr-xr-x root/root    usr/etc/xdg/dfc/
+-rw-r--r-- root/root    usr/etc/xdg/dfc/dfcrc
+drwxr-xr-x root/root    usr/etc/xdg/dfc/fr/
+-rw-r--r-- root/root    usr/etc/xdg/dfc/fr/dfcrc
+drwxr-xr-x root/root    usr/etc/xdg/dfc/nl/
+-rw-r--r-- root/root    usr/etc/xdg/dfc/nl/dfcrc
+drwxr-xr-x root/root    usr/share/
+drwxr-xr-x root/root    usr/share/man/
+drwxr-xr-x root/root    usr/share/man/man1/
+-rw-r--r-- root/root    usr/share/man/man1/dfc.1.gz

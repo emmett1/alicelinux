@@ -1,0 +1,13 @@
+# Depends: libx11 freetype libjpeg-turbo fontconfig libxft libxrandr libxmu consolekit2 
+
+name=slim
+version=1.4.0
+release=1
+source="https://sourceforge.net/projects/$name-fork/files/$name-$version.tar.gz
+	slim.pam
+	run"
+sv="run"
+build_opt="
+	-DUSE_CONSOLEKIT=no \
+	-DUSE_PAM=no
+"

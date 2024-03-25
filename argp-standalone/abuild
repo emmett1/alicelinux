@@ -1,0 +1,17 @@
+# Depends: 
+
+name=argp-standalone
+version=1.4.1
+release=1
+source="https://github.com/${name}/${name}/archive/${version}/${name}-${version}.tar.gz"
+keep_static=1
+
+pre_build() {
+	export CFLAGS="$CFLAGS -fPIC"
+	autoreconf -fiv
+}
+
+post_build() {
+	install -D -m644 argp.h "$PKG"/usr/include/argp.h
+	install -D -m755 libargp.a "$PKG"/usr/lib/libargp.a
+}

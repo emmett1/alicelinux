@@ -1,0 +1,6 @@
+# Depends: libusb
+
+name=libmtp
+version=1.1.21
+release=1
+source="https://jaist.dl.sourceforge.net/project/${name}/${name}/${version}/${name}-${version}.tar.gz"

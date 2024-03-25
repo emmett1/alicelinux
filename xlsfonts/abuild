@@ -1,0 +1,6 @@
+# Depends: xorgproto libx11 util-macros
+
+name=xlsfonts
+version=1.0.7
+release=1
+source="https://xorg.freedesktop.org/archive/individual/app/${name}-${version}.tar.xz"

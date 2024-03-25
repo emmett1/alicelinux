@@ -1,0 +1,6 @@
+url=https://codeberg.org/tenacityteam/libmad/tags
+filename=$name
+
+port_getver() {
+	getver_github
+}

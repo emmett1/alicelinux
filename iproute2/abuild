@@ -1,9 +1,0 @@
-name=iproute2
-version=6.8.0
-release=1
-source="https://www.kernel.org/pub/linux/utils/net/$name/$name-$version.tar.xz"
-
-#pre_build() {
-#	export CFLAGS="$CFLAGS -flto=auto"
-#	sed '/check_elf/d' -i configure
-#}

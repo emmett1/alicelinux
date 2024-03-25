@@ -1,0 +1,14 @@
+diff -Naur lxhotkey-0.1.1.orig/src/lxhotkey.c lxhotkey-0.1.1/src/lxhotkey.c
+--- lxhotkey-0.1.1.orig/src/lxhotkey.c	2021-01-31 05:22:44.000000000 +0800
++++ lxhotkey-0.1.1/src/lxhotkey.c	2023-12-03 23:39:40.194998352 +0800
+@@ -22,6 +22,10 @@
+ # include "config.h"
+ #endif
+ 
++#ifdef ENABLE_NLS
++#include <locale.h>
++#endif
++
+ #include "lxhotkey.h"
+ 
+ #include <glib/gi18n.h>

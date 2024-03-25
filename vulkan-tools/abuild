@@ -1,0 +1,7 @@
+# Depends: vulkan-headers vulkan-icd-loader wayland
+
+name=vulkan-tools
+version=1.3.274
+release=1
+source="https://github.com/KhronosGroup/Vulkan-Tools/archive/v$version/$name-$version.tar.gz"
+build_opt="-DBUILD_CUBE=False"

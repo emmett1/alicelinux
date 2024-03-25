@@ -1,0 +1,7 @@
+name=sysklogd
+version=2.5.2
+release=1
+source="https://github.com/troglobit/$name/releases/download/v$version/$name-$version.tar.gz
+	run"
+sv="run"
+build_opt="--without-logger"

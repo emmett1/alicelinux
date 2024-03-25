@@ -1,0 +1,6 @@
+# Depends: libx11 libxfixes util-macros
+
+name=libxdamage
+version=1.1.6
+release=1
+source="ftp://ftp.x.org/pub/individual/lib/libXdamage-$version.tar.xz"

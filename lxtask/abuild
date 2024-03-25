@@ -1,0 +1,6 @@
+# Depends: gtk2 intltool
+
+name=lxtask
+version=0.1.10
+release=1
+source="https://downloads.sourceforge.net/lxde/$name-$version.tar.xz"

@@ -1,0 +1,10 @@
+name=keyutils
+version=1.6.3
+release=1
+source="https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/keyutils.git/snapshot/$name-$version.tar.gz"
+export USRLIBDIR=/usr/lib
+export LIBDIR=/lib
+
+pre_build() {
+	sed -i 's:$(LIBDIR"/$(PKGCONFIG_DIR):/usr/lib/pkgconfig:' Makefile
+}

@@ -1,0 +1,10 @@
+# Depends: 
+
+name=ufetch
+version=0.3
+release=1
+source="https://gitlab.com/jschx/${name}/-/archive/v${version}/${name}-${version}.tar.gz"
+
+pkg_build() {
+	install -Dm755 ufetch-linux $PKG/usr/bin/ufetch
+}

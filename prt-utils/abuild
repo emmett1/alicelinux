@@ -1,0 +1,12 @@
+# Depends: elfutils
+
+name=prt-utils
+version=1.3
+release=1
+source="http://crux.nu/files/tools/prt-utils/$name-$version.tar.xz"
+
+pre_build() {
+	# crux's revdep is thrash, use mine
+	sed 's;revdep/revdep;;' -i Makefile
+	sed 's;prtverify \\;prtverify;' -i Makefile
+}

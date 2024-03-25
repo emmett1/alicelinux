@@ -1,0 +1,7 @@
+# Depends: 
+
+name=libptytty
+version=2.0
+release=1
+source="http://dist.schmorp.de/${name}/${name}-${version}.tar.gz"
+build_opt="-DBUILD_SHARED_LIBS=ON -DPT_WTMPX_FILE=\"/dev/null/wtmp\""

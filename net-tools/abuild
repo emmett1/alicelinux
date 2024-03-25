@@ -1,0 +1,15 @@
+# Depends: 
+
+name=net-tools
+version=2.10
+release=1
+source="https://sourceforge.net/projects/${name}/files/${name}-${version}.tar.xz"
+
+pkg_build() {
+	export BINDIR='/usr/bin' SBINDIR='/usr/bin'
+	yes "" | make -j1
+	make -j1 install
+	rm $PKG/usr/bin/dnsdomainname \
+	$PKG/usr/share/man/man1/dnsdomainname.1 \
+	$PKG/usr/share/man/man1/hostname.1
+}

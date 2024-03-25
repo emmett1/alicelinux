@@ -1,0 +1,4 @@
+filename=$name
+port_getver() {
+	getver_default | sed 's/^v//'
+}

@@ -1,0 +1,7 @@
+url=https://gitlab.gnome.org/GNOME/gcr/-/tags
+
+port_getver() {
+	getver_default \
+	| grep -Ev ".[89][0-9].*" \
+	| grep ^3
+}

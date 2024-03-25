@@ -1,0 +1,7 @@
+# Depends: libassuan libgcrypt libksba npth gnutls 
+
+name=gnupg
+version=2.4.4
+release=1
+source="https://www.$name.org/ftp/gcrypt/$name/$name-$version.tar.bz2"
+build_opt="--disable-ldap"

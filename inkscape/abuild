@@ -1,0 +1,18 @@
+# Depends: boost double-conversion gc gsl gtkmm libsoup2 libxslt poppler-glib popt lcms2 potrace 
+
+name=inkscape
+version=1.3.2
+release=2
+source="https://media.inkscape.org/dl/resources/file/inkscape-${version}.tar.xz"
+build_opt="-DWITH_INTERNAL_2GEOM=ON"
+
+pre_build() {
+	# fix a build failure caused by libxml2-2.12.0
+	sed -i '/uri.h/a #include <libxml/xmlmemory.h>' src/object/uri.h
+
+	sed -e \
+		"s/add_subdirectory(rendering_tests)/# \0 - skipped due to hinting issues/" \
+		-i testfiles//CMakeLists.txt
+
+	sed -e "/-Werror=format/d" -i CMakeScripts/DefineDependsandFlags.cmake
+}

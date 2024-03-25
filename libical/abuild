@@ -1,0 +1,7 @@
+# Depends: glib libxml2 
+
+name=libical
+version=3.0.17
+release=1
+source="https://github.com/${name}/${name}/releases/download/v${version}/${name}-${version}.tar.gz"
+build_opt="-DENABLE_GTK_DOC=OFF"

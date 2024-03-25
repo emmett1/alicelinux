@@ -1,0 +1,6 @@
+# Depends: libx11 libxinerama libxft
+
+name=dmenu
+version=5.2
+release=1
+source="https://dl.suckless.org/tools/${name}-${version}.tar.gz"

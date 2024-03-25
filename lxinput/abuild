@@ -1,0 +1,6 @@
+# Depends: gtk2 intltool
+
+name=lxinput
+version=0.3.5
+release=1
+source="https://downloads.sourceforge.net/lxde/$name-$version.tar.xz"

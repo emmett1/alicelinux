@@ -1,0 +1,7 @@
+# Depends: perl-xml-parser libsndfile dbus glib libice libsm libxtst
+
+name=pulseaudio
+version=17.0
+release=1
+source="https://www.freedesktop.org/software/$name/releases/$name-$version.tar.xz"
+build_opt="-Ddatabase=gdbm -Ddoxygen=false -Dbluez5=disabled -Dtests=false -Dudevrulesdir=/usr/lib/udev/rules.d"

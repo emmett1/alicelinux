@@ -1,0 +1,7 @@
+# Depends: libisofs libburn
+
+name=libisoburn
+version=1.5.6
+release=1
+source="https://files.libburnia-project.org/releases/${name}-${version}.tar.gz"
+build_opts="--enable-pkg-check-modules"

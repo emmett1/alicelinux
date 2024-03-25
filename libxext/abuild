@@ -1,0 +1,6 @@
+# Depends: libx11 util-macros
+
+name=libxext
+version=1.3.6
+release=1
+source="ftp://ftp.x.org/pub/individual/lib/libXext-$version.tar.xz"

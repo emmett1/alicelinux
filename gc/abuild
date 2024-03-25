@@ -1,0 +1,6 @@
+# Depends: libatomic_ops 
+
+name=gc
+version=8.2.6
+release=1
+source="https://github.com/ivmai/bdw$name/releases/download/v$version/$name-$version.tar.gz"

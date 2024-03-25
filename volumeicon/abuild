@@ -1,0 +1,11 @@
+# Depends: alsa-lib gtk3 libnotify intltool
+
+name=volumeicon
+version=20230323
+release=1
+source="$name-$version.tar.gz::https://github.com/Maato/volumeicon/archive/b034dd1fefe38ef41a5e70f212f2aabf68010f93.tar.gz"
+build_opt="--enable-notify"
+
+pre_build() {
+	./autogen.sh
+}

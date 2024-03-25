@@ -1,0 +1,6 @@
+# Depends: libx11 libxext libxmu libxpm libxt util-macros
+
+name=libxaw
+version=1.0.15
+release=1
+source="ftp://ftp.x.org/pub/individual/lib/libXaw-$version.tar.xz"

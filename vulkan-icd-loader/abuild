@@ -1,0 +1,7 @@
+# Depends: vulkan-headers libx11 libxrandr
+
+name=vulkan-icd-loader
+version=1.3.274
+release=1
+source="https://github.com/KhronosGroup/Vulkan-Loader/archive/v$version/$name-$version.tar.gz"
+build_opt="-DBUILD_TESTS=OFF"

@@ -1,0 +1,6 @@
+# Depends: libxcb xcb-util xcb-util-wm
+
+name=xtitle
+version=0.4.4
+release=1
+source="https://github.com/baskerville/${name}/archive/${version}/${name}-${version}.tar.gz"

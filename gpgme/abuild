@@ -1,0 +1,8 @@
+# Depends: libassuan gnupg 
+
+name=gpgme
+version=1.23.2
+release=1
+source="https://www.gnupg.org/ftp/gcrypt/$name/$name-$version.tar.bz2
+	lfs64.patch"
+build_opt="--disable-gpg-test"

@@ -1,0 +1,8 @@
+# Depends: cairo pango gnutls gtk3 vala
+
+name=vte
+version=0.74.2
+release=1
+source="https://gitlab.gnome.org/GNOME/${name}/-/archive/${version}/${name}-${version}.tar.gz
+	fix-W_EXITCODE.patch"
+build_opt="-Db_lto=false -Dgtk4=false -D_systemd=false"

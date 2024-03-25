@@ -1,0 +1,6 @@
+# Depends: cairo
+
+name=python3-cairo
+version=1.26.0
+release=1
+source="https://github.com/pygobject/pycairo/archive/v${version}/${name}-${version}.tar.gz"

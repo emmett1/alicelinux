@@ -1,0 +1,6 @@
+# Depends: libx11 libxrender freetype fontconfig util-macros
+
+name=libxft
+version=2.3.8
+release=1
+source="ftp://ftp.x.org/pub/individual/lib/libXft-$version.tar.xz"

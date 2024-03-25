@@ -1,0 +1,20 @@
+# Depends: libx11 glib gtk2 intltool
+
+name=lxdm
+version=0.5.3
+release=1
+source="https://downloads.sourceforge.net/$name/$name-$version.tar.xz
+	execinfo.patch
+	fix-msghdr-usage.patch
+	run"
+sv="run"
+
+pre_build() {
+	sed -i 's:sysconfig/i18n:profile.d/locale.sh:g' data/lxdm.in
+	sed -i '/# arg/s/^# //g' data/lxdm.conf.in
+	sed -i 's/^bg/#&/' data/lxdm.conf.in
+	sed -i '/reset=1/ s/# //' data/lxdm.conf.in
+	sed -i 's:/etc/xprofile:/etc/profile:g' data/Xsession
+
+	autoreconf -fi
+}

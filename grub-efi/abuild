@@ -1,0 +1,33 @@
+# Depends: grub efibootmgr
+
+name=grub-efi
+version=2.12
+release=1
+source="https://ftp.gnu.org/gnu/grub/grub-$version.tar.xz
+	https://unifoundry.com/pub/unifont/unifont-15.0.01/font-builds/unifont-15.0.01.pcf.gz::noextract
+	extra_deps.lst"
+build_opt="--disable-efiemu
+	--enable-grub-mount
+	--enable-grub-mkfont
+	--enable-device-mapper
+	--with-platform=efi
+	--target=x86_64
+	--disable-werror"
+unset CFLAGS
+unset CXXFLAGS
+
+pre_build() {
+	cp $SRC/extra_deps.lst grub-core/
+	mkdir -pv $PKG/usr/share/fonts/unifont
+	gunzip -c $SRC/unifont-15.0.01.pcf > $PKG/usr/share/fonts/unifont/unifont.pcf
+}
+
+post_build() {
+	rm -rf \
+	$PKG/etc \
+	$PKG/usr/sbin \
+	$PKG/usr/bin \
+	$PKG/usr/share/info \
+	$PKG/usr/share/locale \
+	$PKG/usr/share/grub
+}

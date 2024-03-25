@@ -1,0 +1,14 @@
+# Depends: gegl babl gexiv2 libmypaint mypaint-brushes at-spi2-core glib-networking gtk2 gdk-pixbuf pango cairo harfbuzz poppler-glib librsvg
+
+name=gimp
+version=2.10.36
+release=1
+source="https://download.${name}.org/pub/${name}/v${version%.*}/${name}-${version}.tar.bz2"
+build_opt="--disable-python --disable-check-update"
+
+pre_build() {
+	# gtk-update-icon-cache provided by gtk3
+	mkdir bin
+	ln -s /bin/true bin/gtk-update-icon-cache
+	export PATH=$PATH:$PWD/bin
+}

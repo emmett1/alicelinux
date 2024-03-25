@@ -1,0 +1,7 @@
+# Depends: lzo e2fsprogs
+
+name=btrfs-progs
+version=6.7.1
+release=1
+source="https://www.kernel.org/pub/linux/kernel/people/kdave/$name/$name-v$version.tar.xz"
+build_opt="--disable-documentation --disable-backtrace --disable-zstd"

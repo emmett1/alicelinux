@@ -1,0 +1,8 @@
+# Depends: net-tools python3-gobject cython bluez
+
+name=blueman
+version=2.3.5
+release=1
+source="https://github.com/${name}-project/${name}/releases/download/${version}/${name}-${version}.tar.xz"
+build_type=configure_build
+build_opt="--disable-schemas-compile"

@@ -1,0 +1,17 @@
+name=pcre
+version=8.45
+release=1
+source="https://sourceforge.net/projects/$name/files/$name/$version/$name-$version.tar.bz2"
+
+pkg_build() {
+	./configure --prefix=/usr                     \
+	            --enable-unicode-properties       \
+	            --enable-pcre16                   \
+	            --enable-pcre32                   \
+	            --enable-pcregrep-libz            \
+	            --enable-pcregrep-libbz2          \
+	            --enable-pcretest-libreadline     \
+	            --disable-static
+	make
+	make install
+}

@@ -1,0 +1,7 @@
+# Depends: libdrm xorg-server util-macros
+
+name=xf86-video-nouveau
+version=1.0.17
+release=1
+source="https://xorg.freedesktop.org/archive/individual/driver/${name}-${version}.tar.gz
+	xorg-server-21.1.patch"

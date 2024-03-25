@@ -1,0 +1,16 @@
+name=gpm
+version=1.20.7
+release=1
+source="https://anduin.linuxfromscratch.org/BLFS/$name/$name-$version.tar.bz2
+	musl-fcntl.patch
+	musl-gpm_h.patch
+	musl-linux_major_h.patch
+	musl-select.patch
+	musl-sigaction.patch
+	run"
+sv="run"
+export CFLAGS="$CFLAGS -fcommon"
+
+pre_build() {
+	./autogen.sh
+}

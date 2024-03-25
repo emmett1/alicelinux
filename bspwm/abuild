@@ -1,0 +1,6 @@
+# Depends: libxcb xcb-util-wm xcb-util xcb-util-keysyms
+
+name=bspwm
+version=0.9.10
+release=1
+source="https://github.com/baskerville/${name}/archive/${version}/${name}-${version}.tar.gz"

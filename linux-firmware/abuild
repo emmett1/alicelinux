@@ -1,0 +1,14 @@
+# Depends: rdfind
+
+name=linux-firmware
+version=20240115
+release=2
+source="https://git.kernel.org/pub/scm/linux/kernel/git/firmware/$name.git/snapshot/$name-$version.tar.gz"
+
+pkg_build() {
+	make FIRMWAREDIR=/lib/firmware install-xz
+	# make separate port for them
+	for i in amd* radeon brcm cypress nvidia qcom netronome mellanox mrvl; do
+		rm -rf $PKG/lib/firmware/$i
+	done
+}

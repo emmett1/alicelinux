@@ -1,0 +1,12 @@
+# Depends: wget
+
+name=pkg-get
+version=0.4.7
+release=1
+source="http://crux.nu/files/distfiles/${name}-${version}.tar.gz
+	$name.conf"
+
+post_build() {
+	install -m644 $SRC/$name.conf $PKG/etc/$name.conf
+	mkdir -p $PKG/var/cache/pkg-get/packages
+}

@@ -1,0 +1,7 @@
+# Depends: vte libx11 intltool
+
+name=lxterminal
+version=0.4.0
+release=1
+source="https://downloads.sourceforge.net/lxde/$name-$version.tar.xz"
+build_opt="--enable-gtk3"

@@ -1,0 +1,6 @@
+# Depends: libx11 libxkbfile util-macros
+
+name=xkbcomp
+version=1.4.7
+release=1
+source="https://www.x.org/pub/individual/app/$name-$version.tar.xz"
